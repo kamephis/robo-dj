@@ -156,6 +156,7 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
             <button class="chip" data-style="house" aria-pressed="true">House</button>
             <button class="chip" data-style="retro" aria-pressed="false">Retro-Disco</button>
             <button class="chip" data-style="lofi" aria-pressed="false">Lo-Fi</button>
+            <button class="chip" data-style="funk" aria-pressed="false">Funk</button>
           </div>
           <div class="sliders">
             <label for="sTempo">Tempo</label><input type="range" id="sTempo" min="70" max="140" value="124"><output id="oTempo">124</output>
@@ -176,6 +177,7 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
         <button class="chip" data-move="headbang" aria-pressed="false" title="5">Headbang</button>
         <button class="chip" data-move="spin" aria-pressed="false" title="6">Pirouette</button>
         <button class="chip" data-move="wave" aria-pressed="false" title="7">Winken</button>
+        <button class="chip" data-move="fever" aria-pressed="false" title="8">Disco-Finger</button>
       </div>
     </section>
 
@@ -218,7 +220,23 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
       </div>
     </section>
 
-    <p class="hint"><kbd>Leertaste</kbd> Musik · <kbd>1</kbd>–<kbd>7</kbd> Tanz · <kbd>K</kbd> <kbd>A</kbd> <kbd>X</kbd> <kbd>R</kbd> FX-Pad · <kbd>F</kbd> Vollbild · <kbd>H</kbd> Steuerung aus/an · Roboter anklicken = Boop</p>
+    <section class="grp">
+      <h2>Bühne</h2>
+      <div class="row" role="group" aria-label="Setting">
+        <button class="chip" data-scene="club" aria-pressed="true" title="G">Club</button>
+        <button class="chip" data-scene="beach" aria-pressed="false" title="G">Strand</button>
+        <button class="chip" data-scene="space" aria-pressed="false" title="G">Weltall</button>
+      </div>
+      <div class="row">
+        <label for="iDesk" style="position:absolute;left:-9999px">Schriftzug am Pult</label>
+        <input class="field" id="iDesk" maxlength="18" value="ROBO DJ" placeholder="Schriftzug am Pult" style="width:150px">
+        <button class="chip" id="btnLogo" title="PNG, JPG oder SVG – wird statt des Schriftzugs am Pult gezeigt">Logo laden</button>
+        <button class="chip" id="btnLogoX" hidden>Logo entfernen</button>
+        <input type="file" id="iLogo" accept="image/*" hidden>
+      </div>
+    </section>
+
+    <p class="hint"><kbd>Leertaste</kbd> Musik · <kbd>1</kbd>–<kbd>8</kbd> Tanz · <kbd>K</kbd> <kbd>A</kbd> <kbd>X</kbd> <kbd>R</kbd> FX-Pad · <kbd>G</kbd> Bühne · <kbd>F</kbd> Vollbild · <kbd>H</kbd> Steuerung aus/an · Roboter anklicken = Boop</p>
   </div>
 </div>
 <button class="chip peek" id="btnPeek" title="Steuerung einblenden (H)">Steuerung</button>
@@ -297,7 +315,7 @@ const std = (color, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ co
 const PAL = ['#ff5fa2', '#5ff2c8', '#ffd35c', '#9d8bff', '#62b6ff', '#ff8a5c'];
 
 /* ------------------------------------------------------------------ lights */
-scene.add(new THREE.HemisphereLight('#b9a8ff', '#1a1030', 0.75));
+const hemi = new THREE.HemisphereLight('#b9a8ff', '#1a1030', 0.75); scene.add(hemi);
 const key = new THREE.DirectionalLight('#ffffff', 1.5); key.position.set(2, 6, 7); scene.add(key);
 const rimA = new THREE.PointLight('#ff5fa2', 1.6, 9); rimA.position.set(-2.6, 3.2, -1.6); scene.add(rimA);
 const rimB = new THREE.PointLight('#5ff2c8', 1.6, 9); rimB.position.set(2.6, 3.2, -1.6); scene.add(rimB);
@@ -371,14 +389,24 @@ const desk = new THREE.Group(); desk.position.set(0, 0, 0.62); scene.add(desk);
 const deskBody = mesh(roundedBox(3.1, 1.1, 0.8, 0.05, 3), std('#2a2152', { roughness: 0.45, metalness: 0.2 })); deskBody.position.y = 0.55; desk.add(deskBody);
 const top = mesh(roundedBox(3.16, 0.04, 0.84, 0.015, 2), std('#15102b', { roughness: 0.35, metalness: 0.4 })); top.position.y = 1.115; desk.add(top);
 const logo = canvasTex(1024, 256);
+const deskCfg = { text: 'ROBO DJ', img: null };
 function drawLogo() {
   const { g } = logo, W = 1024, H = 256;
   g.clearRect(0, 0, W, H);
   const gr = g.createLinearGradient(0, 0, W, 0); gr.addColorStop(0, '#2b1c5c'); gr.addColorStop(1, '#1a1240');
   g.fillStyle = gr; roundRect(g, 0, 0, W, H, 26); g.fill();
   for (let i = 0; i < 18; i++) { g.fillStyle = `rgba(255,255,255,${0.025 + (i % 3) * 0.01})`; g.fillRect(i * 60 - 20, 0, 24, H); }
-  g.font = '700 118px Fredoka, ui-rounded, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.shadowColor = '#ff5fa2'; g.shadowBlur = 30; g.fillStyle = '#ffffff'; g.fillText('ROBO DJ', W / 2, H / 2 - 12);
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  if (deskCfg.img) {
+    const im = deskCfg.img, bw = W - 160, bh = H - 84, k = Math.min(bw / im.width, bh / im.height);
+    const w = im.width * k, h = im.height * k;
+    g.shadowColor = 'rgba(255,95,162,.55)'; g.shadowBlur = 24;
+    g.drawImage(im, (W - w) / 2, 16 + (bh - h) / 2, w, h);
+  } else {
+    const txt = deskCfg.text || 'ROBO DJ'; let size = 122;
+    do { size -= 4; g.font = `700 ${size}px Fredoka, ui-rounded, sans-serif`; } while (g.measureText(txt).width > W - 90 && size > 30);
+    g.shadowColor = '#ff5fa2'; g.shadowBlur = 30; g.fillStyle = '#ffffff'; g.fillText(txt, W / 2, H / 2 - 12);
+  }
   g.shadowBlur = 0; g.font = '500 30px "DM Mono", monospace'; g.fillStyle = '#5ff2c8'; g.fillText('PAUSEN · SET · LIVE', W / 2, H - 40);
   logo.t.needsUpdate = true;
 }
@@ -561,12 +589,115 @@ function burstConfetti() {
   confettiLive = CN;
 }
 
+/* ------------------------------------------------------------------ stages: Club / Strand / Weltall */
+const clubOnly = [backWall, wallFrame, wall];
+const beachG = new THREE.Group(), spaceG = new THREE.Group();
+scene.add(beachG, spaceG);
+const glowTex = stops => canvasTex(256, 256, (g, W) => { const r = g.createRadialGradient(W / 2, W / 2, 0, W / 2, W / 2, W / 2); stops.forEach(([o, c]) => r.addColorStop(o, c)); g.fillStyle = r; g.fillRect(0, 0, W, W); }).t;
+// Strand bei Sonnenuntergang
+const skyTex = canvasTex(8, 512, (g, W, H) => {
+  const gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, '#24195a'); gr.addColorStop(0.35, '#6c3c8e'); gr.addColorStop(0.58, '#d9688a'); gr.addColorStop(0.78, '#ff9a6a'); gr.addColorStop(1, '#ffc98a');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+}).t;
+const sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex([[0, 'rgba(255,250,225,1)'], [0.24, 'rgba(255,215,125,1)'], [0.31, 'rgba(255,165,95,.6)'], [1, 'rgba(255,110,90,0)']]), transparent: true, depthWrite: false, fog: false }));
+sun.scale.setScalar(18); sun.position.set(2.5, 1.6, -55); beachG.add(sun);
+const sea = mesh(new THREE.PlaneGeometry(240, 100), std('#47358a', { roughness: 0.16, metalness: 0.55 }));
+sea.rotation.x = -Math.PI / 2; sea.position.set(0, -0.02, -53.5); beachG.add(sea);
+const glitter = mesh(new THREE.PlaneGeometry(4, 50), new THREE.MeshBasicMaterial({ map: softTex, color: '#ffb27a', transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+glitter.rotation.x = -Math.PI / 2; glitter.position.set(2.5, 0.0, -30); beachG.add(glitter);
+const sand = mesh(new THREE.PlaneGeometry(44, 18), std('#d8a66c', { roughness: 0.95, metalness: 0 }));
+sand.rotation.x = -Math.PI / 2; sand.position.set(0, 0, 5.5); beachG.add(sand);
+const foam = mesh(new THREE.PlaneGeometry(44, 0.45), new THREE.MeshBasicMaterial({ color: '#fff3e6', transparent: true, opacity: 0.5 }));
+foam.rotation.x = -Math.PI / 2; foam.position.set(0, 0.005, -3.4); beachG.add(foam);
+const crowns = [];
+function palm(x, z, lean) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); beachG.add(g);
+  const trunkM = std('#8a6440', { roughness: 0.9 }), leafM = std('#2fa572', { roughness: 0.6, side: THREE.DoubleSide });
+  let px = 0, py = 0;
+  for (let i = 0; i < 9; i++) {
+    const seg = mesh(new THREE.CylinderGeometry(0.1 - i * 0.005, 0.13 - i * 0.005, 0.46, 10), trunkM);
+    px += lean * i * 0.014; seg.position.set(px, py + 0.23, 0); seg.rotation.z = -lean * i * 0.028; g.add(seg); py += 0.42;
+  }
+  const crown = new THREE.Group(); crown.position.set(px, py + 0.05, 0); g.add(crown);
+  for (let i = 0; i < 8; i++) {
+    const pivot = new THREE.Group(); pivot.rotation.y = i / 8 * TAU + 0.2; crown.add(pivot);
+    const leaf = mesh(new THREE.SphereGeometry(1, 14, 8), leafM); leaf.scale.set(0.95, 0.04, 0.2); leaf.position.set(0.82, -0.18, 0); leaf.rotation.z = -0.4; pivot.add(leaf);
+  }
+  for (let i = 0; i < 3; i++) { const c = mesh(new THREE.SphereGeometry(0.09, 12, 8), std('#5a3a22', { roughness: 0.8 })); c.position.set(Math.cos(i * 2.1) * 0.12, -0.12, Math.sin(i * 2.1) * 0.12); crown.add(c); }
+  crowns.push(crown);
+  return new THREE.Vector3(x + px, py, z);
+}
+const palmL = palm(-4.7, -2.6, 1), palmR = palm(4.9, -2.3, -1);
+const bulbs = [];
+for (let i = 0; i < 22; i++) {
+  const t = (i + 0.5) / 22, b = mesh(new THREE.SphereGeometry(0.06, 10, 8), new THREE.MeshBasicMaterial({ color: PAL[i % 4] }));
+  b.position.lerpVectors(palmL, palmR, t); b.position.y -= 0.2 + Math.sin(Math.PI * t) * 0.7; beachG.add(b); bulbs.push(b);
+}
+// Weltall
+const starGeo = new THREE.BufferGeometry(); {
+  const n = 1700, a = new Float32Array(n * 3), v = new THREE.Vector3();
+  for (let i = 0; i < n; i++) { v.set(rand(-1, 1), rand(-0.15, 1), rand(-1, 0.6)).normalize().multiplyScalar(rand(30, 46)); a.set([v.x, v.y, v.z], i * 3); }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(a, 3));
+}
+const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 0.22, map: softTex, color: '#ffffff', transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+spaceG.add(stars);
+for (let i = 0; i < 6; i++) {
+  const n = new THREE.Sprite(new THREE.SpriteMaterial({ map: softTex, color: ['#ff5fa2', '#9d8bff', '#5ff2c8'][i % 3], transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  n.position.set(rand(-22, 22), rand(3, 13), rand(-40, -32)); n.scale.setScalar(rand(18, 30)); spaceG.add(n);
+}
+const planet = new THREE.Group(); planet.position.set(-13, 3.6, -26); planet.rotation.z = 0.35; spaceG.add(planet);
+const bandTex = canvasTex(256, 128, (g, W, H) => { const cs = ['#7a5cff', '#b56cff', '#ff7ab5', '#ffb38a', '#9d8bff', '#6a4ad8']; for (let y = 0; y < H; y += 8) { g.fillStyle = cs[(y / 8 + (hash(y) * 3 | 0)) % cs.length]; g.fillRect(0, y, W, 8); } }).t;
+const ball3 = mesh(new THREE.SphereGeometry(4.2, 48, 32), std('#ffffff', { map: bandTex, roughness: 0.8 })); planet.add(ball3);
+const ring = mesh(new THREE.RingGeometry(5.4, 8, 96), new THREE.MeshBasicMaterial({ color: '#ffd35c', transparent: true, opacity: 0.35, side: THREE.DoubleSide, fog: false }));
+ring.rotation.x = -Math.PI / 2 + 0.35; planet.add(ring);
+const moon = mesh(new THREE.SphereGeometry(1.3, 32, 20), std('#d8d2ec', { roughness: 1 })); moon.position.set(12, 5.2, -22); spaceG.add(moon);
+const platform = mesh(roundedBox(10.8, 0.16, 5.9, 0.06, 2), std('#1a1438', { metalness: 0.6, roughness: 0.3 })); platform.position.set(0, -0.085, 0.2); spaceG.add(platform);
+const edge = mesh(new THREE.BoxGeometry(10.8, 0.04, 0.04), new THREE.MeshBasicMaterial({ color: '#5ff2c8' })); edge.position.set(0, -0.02, 3.16); spaceG.add(edge);
+const ufo = new THREE.Group(); spaceG.add(ufo);
+{ const d = mesh(new THREE.SphereGeometry(0.7, 32, 16), std('#cfc9e3', { metalness: 0.8, roughness: 0.25 })); d.scale.y = 0.28; ufo.add(d);
+  const dome = mesh(new THREE.SphereGeometry(0.34, 24, 12, 0, TAU, 0, Math.PI / 2), std('#5ff2c8', { transparent: true, opacity: 0.75, roughness: 0.1, emissive: '#1b6b5a' })); dome.position.y = 0.1; ufo.add(dome); }
+const ufoLights = [];
+for (let i = 0; i < 8; i++) { const l = mesh(new THREE.SphereGeometry(0.045, 8, 6), new THREE.MeshBasicMaterial({ color: '#ffd35c' })); l.position.set(Math.cos(i / 8 * TAU) * 0.62, -0.03, Math.sin(i / 8 * TAU) * 0.62); ufo.add(l); ufoLights.push(l); }
+
+const SCENES = {
+  club: { bg: new THREE.Color('#0e0a1f'), fog: '#0e0a1f', dens: 0.03, hemi: ['#b9a8ff', '#1a1030', 0.75], key: '#ffffff' },
+  beach: { bg: skyTex, fog: '#d9688a', dens: 0.016, hemi: ['#ffc6a0', '#4a2a5a', 1.0], key: '#ffd8b0' },
+  space: { bg: new THREE.Color('#060418'), fog: '#060418', dens: 0.012, hemi: ['#a99bff', '#0a0820', 0.7], key: '#e8e4ff' }
+};
+const SCENE_ORDER = ['club', 'beach', 'space'];
+let curScene = 'club';
+function applyScene(k) {
+  curScene = k; const S = SCENES[k];
+  scene.background = S.bg; scene.fog.color.set(S.fog);
+  hemi.color.set(S.hemi[0]); hemi.groundColor.set(S.hemi[1]); hemi.intensity = S.hemi[2]; key.color.set(S.key);
+  clubOnly.forEach(o => (o.visible = k === 'club'));
+  floor.visible = k === 'club'; beachG.visible = k === 'beach'; spaceG.visible = k === 'space';
+}
+function updateScenery(dt, bi) {
+  if (curScene === 'beach') {
+    crowns.forEach((c, i) => { c.rotation.z = Math.sin(time * 0.9 + i * 1.7) * 0.05; c.rotation.x = Math.sin(time * 0.7 + i) * 0.03; });
+    bulbs.forEach((b, i) => b.material.color.set(PAL[(i + bi) % 4]).multiplyScalar((i + bi) % 3 === 0 ? 1 : 0.45));
+    foam.position.z = -3.4 + Math.sin(time * 0.6) * 0.25; foam.material.opacity = 0.35 + Math.sin(time * 0.6 + 1) * 0.15;
+    glitter.material.opacity = 0.35 + Math.sin(time * 2.3) * 0.08;
+  } else if (curScene === 'space') {
+    stars.rotation.y += dt * 0.004; ball3.rotation.y += dt * 0.05; moon.rotation.y += dt * 0.1;
+    const a = time * 0.32;
+    ufo.position.set(Math.cos(a) * 5.6, 3.25 + Math.sin(time * 1.3) * 0.2, -2.4 + Math.sin(a) * 1.8);
+    ufo.rotation.set(Math.sin(time * 1.1) * 0.12, ufo.rotation.y + dt * 2, Math.cos(time * 0.9) * 0.1);
+    ufoLights.forEach((l, i) => l.material.color.set((i + bi) % 2 ? '#ffd35c' : '#ff5fa2'));
+    edge.material.color.setHSL((time * 0.05) % 1, 0.85, 0.55 + kickPulse * 0.2);
+  }
+}
+applyScene('club');
+
 /* ------------------------------------------------------------------ audio engine */
 const A = { ctx: null, playing: false, style: 'house', bpm: 124, step: 0, nextTime: 0, vol: 0.75, filter: 0, events: [] };
 const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
 const STYLES = {
   house: { label: 'House', bpm: 124, swing: 0, edm: true, tone: 20000, roots: [33, 29, 36, 31], chords: [[57, 60, 64, 67], [53, 57, 60, 64], [55, 60, 64, 67], [55, 59, 62, 67]] },
   retro: { label: 'Retro-Disco', bpm: 112, swing: 0, edm: true, tone: 20000, roots: [38, 34, 41, 36], chords: [[62, 65, 69, 74], [58, 62, 65, 70], [57, 60, 65, 69], [55, 60, 64, 67]] },
+  funk: { label: 'Funk', bpm: 104, swing: 0.1, edm: false, tone: 20000, roots: [40, 40, 45, 43], chords: [[55, 59, 62, 66], [55, 59, 62, 66], [55, 61, 64, 67], [53, 59, 62, 65]] },
   lofi: { label: 'Lo-Fi', bpm: 84, swing: 0.22, edm: false, tone: 5200, roots: [41, 40, 38, 36], chords: [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]] }
 };
 
@@ -762,6 +893,15 @@ function scheduleStep(step, t0) {
       if (s % 2 === 0) hat(t, false, 0.12);
       if (s % 4 === 0) voice(t, [chord[(s / 4) % chord.length] + 12], spb * 3, { type: 'triangle', cut: 3000, vol: 0.05, pluck: true, delay: true, rev: true });
     }
+  } else if (A.style === 'funk') {
+    if (s === 0 || s === 6 || s === 10 || (s === 3 && bar % 2)) kick(t, 0.9);
+    if (s === 4 || s === 12) snare(t, 0.8);
+    if (s === 7 || s === 9 || s === 15) snare(t, 0.16, true);
+    hat(t, s === 14, s % 4 === 2 ? 0.3 : 0.15);
+    const P = [0, null, 12, null, null, 0, null, 10, 0, null, null, 7, null, 12, 0, null];
+    if (P[s] !== null) bass(t, root + P[s], spb * 0.9, { type: 'square', cut: 900, vol: 0.26 });
+    if ([2, 6, 9, 13].includes(s)) voice(t, chord, spb * 0.6, { type: 'square', cut0: 3800, cut: 800, fdec: 0.09, q: 7, vol: 0.022, pluck: true });
+    if (lead && bar % 2 && (s === 12 || s === 14)) voice(t, chord.map(n => n + 12), spb * (s === 14 ? 2.5 : 1), { type: 'sawtooth', detune: 10, cut0: 900, cut: 3200, fdec: 0.06, q: 2, vol: 0.026, attack: 0.02, release: 0.12, rev: true });
   } else {
     const vary = bar % 2;
     if (s === 0 || (s === 7 && vary) || s === 10) kick(t, 0.8, true);
@@ -783,7 +923,7 @@ const state = {
   move: 'auto', autoMove: 'dj', fx: { lights: true, wall: true, lasers: false, disco: false, fog: false, strobe: false },
   timer: { running: false, endAt: 0, done: false }, forceWave: 0
 };
-const AUTO_SEQ = ['dj', 'hands', 'robot', 'dj', 'headbang', 'spin'];
+const AUTO_SEQ = ['dj', 'hands', 'robot', 'fever', 'dj', 'headbang', 'spin'];
 let animBeat = 0, lastBeatInt = -1, barNo = 0, E = 0, I = 0.4, kickPulse = 0, snarePulse = 0, strobeA = 0, punch = 0;
 const freq = new Uint8Array(512);
 
@@ -919,6 +1059,11 @@ function poseTargets(mv, b, dip, I) {
     T.A.sx += 0.1 * dip; T.B.sx += 0.1 * dip;
   } else if (mv === 'spin') {
     T.A = { sx: -0.1, sz: -1.25, ex: -0.25, hy: 0 }; T.B = { sx: -0.1, sz: 1.25, ex: -0.25, hy: 0 }; T.hy = 0;
+  } else if (mv === 'fever') {
+    const up = Math.floor(b) % 2 === 0; T.k = 14;
+    T.B = up ? { sx: -0.35, sz: 2.45, ex: 0, hy: 0 } : { sx: -0.55, sz: -0.65, ex: 0, hy: 0 };
+    T.A = { sx: -0.15, sz: -0.55, ex: -1.3, hy: 0 };
+    T.rz = up ? 0.09 : -0.09; T.hy = up ? -0.3 : 0.25; T.hx = up ? -0.15 : 0.15; T.hz = up ? 0.12 : -0.05; T.y = -0.05 * dip;
   } else if (mv === 'wave') {
     T.B = { sx: -0.15, sz: 2.35 + Math.sin(time * 7) * 0.35, ex: -0.35, hy: 0 };
     T.A = { sx: -0.2, sz: -0.25, ex: -0.4, hy: 0 }; T.hz = 0.15 + Math.sin(time * 3.5) * 0.05; T.hy = -0.15;
@@ -947,7 +1092,7 @@ function updateRobot(dt) {
 
   // face
   let expr = 'normal', mouth = A.playing ? clamp(E * 1.1 - 0.25, 0, 1) * 0.7 : 0;
-  if (mv === 'hands' || mv === 'headbang' || mv === 'wave') { expr = 'happy'; mouth = 'grin'; }
+  if (mv === 'hands' || mv === 'headbang' || mv === 'wave' || mv === 'fever') { expr = 'happy'; mouth = 'grin'; }
   if (mv === 'spin') { expr = 'star'; mouth = 'o'; }
   if (face.temp && face.until > time) { expr = face.temp; mouth = expr === 'star' ? 'o' : 'grin'; }
   if (time > face.nextBlink && face.blinkT < 0) { face.blinkT = 0; face.nextBlink = time + rand(2.2, 5); }
@@ -1124,7 +1269,7 @@ function frame(nowMs) {
   sparks.visible = sparkMat.opacity > 0.01;
   // fog
   const fogOn = state.fx.fog;
-  scene.fog.density = damp(scene.fog.density, fogOn ? 0.06 : 0.03, 1.5, dt);
+  scene.fog.density = damp(scene.fog.density, SCENES[curScene].dens + (fogOn ? 0.03 : 0), 1.5, dt);
   fogSprites.forEach(sp => {
     sp.position.x += sp.userData.v * dt; if (sp.position.x > 7) sp.position.x = -7; if (sp.position.x < -7) sp.position.x = 7;
     sp.material.opacity = damp(sp.material.opacity, fogOn ? 0.16 * sp.userData.w : 0, 1.2, dt);
@@ -1150,6 +1295,7 @@ function frame(nowMs) {
   // strobe
   strobeA *= Math.exp(-dt * 16); strobeEl.style.opacity = strobeA.toFixed(3);
 
+  updateScenery(dt, bi);
   updateTimer();
   updateCamera(dt);
   R.render(scene, camera);
@@ -1205,13 +1351,28 @@ function syncUI() {
   $('#npStyle').textContent = STYLES[A.style].label; $('#npBpm').textContent = A.bpm;
   if (!A.playing) $('#npBar').textContent = '–';
   document.body.style.setProperty('--bpm', A.bpm);
+  $$('[data-scene]').forEach(b => b.setAttribute('aria-pressed', b.dataset.scene === curScene));
+  const wb = document.querySelector('[data-fx="wall"]'); wb.disabled = curScene !== 'club'; wb.title = curScene === 'club' ? 'W' : 'Nur im Club';
+  $('#btnLogoX').hidden = !deskCfg.img;
+}
+function setScene(k) { applyScene(k); store.set('scene', k); syncUI(); }
+function loadLogo(src, save) {
+  const im = new Image();
+  im.onload = () => {
+    const w0 = im.width || 640, h0 = im.height || 220, k = Math.min(1, 640 / w0, 220 / h0), c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w0 * k)); c.height = Math.max(1, Math.round(h0 * k));
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+    deskCfg.img = c; drawLogo(); syncUI();
+    if (save) store.set('logo', c.toDataURL('image/png'));
+  };
+  im.src = src;
 }
 function setStyle(k) {
   A.style = k; A.bpm = STYLES[k].bpm; $('#sTempo').value = A.bpm; $('#oTempo').textContent = A.bpm; store.set('style', k);
   if (A.ctx) applyFilter(); syncUI();
 }
 function setMove(m) { state.move = m; if (m === 'auto') state.autoMove = 'dj'; state.forceWave = 0; syncUI(); }
-function toggleFx(k) { if (k === 'strobe' && RM) return; state.fx[k] = !state.fx[k]; syncUI(); }
+function toggleFx(k) { if ((k === 'strobe' && RM) || (k === 'wall' && curScene !== 'club')) return; state.fx[k] = !state.fx[k]; syncUI(); }
 function togglePlay() { A.playing ? stop() : play(); }
 function toggleStage() { document.body.classList.toggle('stage'); measure(); wake(); }
 function toggleFull() {
@@ -1232,6 +1393,11 @@ $('#sVol').addEventListener('input', e => { A.vol = e.target.value / 100; $('#oV
 $('#sFilter').addEventListener('input', e => { A.filter = e.target.value / 100; const v = +e.target.value; $('#oFilter').textContent = Math.abs(v) < 3 ? 'aus' : (v < 0 ? 'TP ' : 'HP ') + Math.abs(v); applyFilter(); });
 $('#sFilter').addEventListener('dblclick', e => { e.target.value = 0; e.target.dispatchEvent(new Event('input')); });
 $('#iText').addEventListener('input', e => { if (!state.timer.done) bannerTitle.textContent = e.target.value.trim() || 'Kurze Pause'; store.set('text', e.target.value); });
+$$('[data-scene]').forEach(b => b.addEventListener('click', () => setScene(b.dataset.scene)));
+$('#iDesk').addEventListener('input', e => { deskCfg.text = e.target.value.trim() || 'ROBO DJ'; drawLogo(); store.set('desk', e.target.value); });
+$('#btnLogo').addEventListener('click', () => $('#iLogo').click());
+$('#iLogo').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => loadLogo(rd.result, true); rd.readAsDataURL(f); e.target.value = ''; });
+$('#btnLogoX').addEventListener('click', () => { deskCfg.img = null; drawLogo(); store.set('logo', null); syncUI(); });
 $('#btnTimer').addEventListener('click', () => (state.timer.running ? cancelTimer() : startTimer()));
 $('#btnFull').addEventListener('click', toggleFull);
 $('#btnHide').addEventListener('click', toggleStage);
@@ -1251,9 +1417,10 @@ addEventListener('keydown', e => {
   if (e.target.closest && e.target.closest('input,select,textarea')) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = e.key.toLowerCase();
-  const moves = ['auto', 'dj', 'hands', 'robot', 'headbang', 'spin', 'wave'];
+  const moves = ['auto', 'dj', 'hands', 'robot', 'headbang', 'spin', 'wave', 'fever'];
   if (k === ' ') { if (e.target.closest && e.target.closest('button')) return; e.preventDefault(); togglePlay(); }
-  else if (/^[1-7]$/.test(k)) setMove(moves[+k - 1]);
+  else if (/^[1-8]$/.test(k)) setMove(moves[+k - 1]);
+  else if (k === 'g') setScene(SCENE_ORDER[(SCENE_ORDER.indexOf(curScene) + 1) % SCENE_ORDER.length]);
   else if (k === 'l') toggleFx('lasers'); else if (k === 'd') toggleFx('disco'); else if (k === 'n') toggleFx('fog');
   else if (k === 's') toggleFx('lights'); else if (k === 'w') toggleFx('wall'); else if (k === 'b') toggleFx('strobe');
   else if (k === 'k') shot('confetti'); else if (k === 'a') shot('horn'); else if (k === 'x') shot('scratch'); else if (k === 'r') shot('drop');
@@ -1265,6 +1432,9 @@ addEventListener('keydown', e => {
   const st = store.get('style', 'house'); if (STYLES[st]) setStyle(st);
   const v = store.get('vol', 75); $('#sVol').value = v; A.vol = v / 100; $('#oVol').textContent = v + ' %';
   const tx = store.get('text', null); if (typeof tx === 'string') { $('#iText').value = tx; bannerTitle.textContent = tx.trim() || 'Kurze Pause'; }
+  const sc = store.get('scene', 'club'); if (SCENES[sc]) applyScene(sc);
+  const dk = store.get('desk', null); if (typeof dk === 'string') { $('#iDesk').value = dk; deskCfg.text = dk.trim() || 'ROBO DJ'; drawLogo(); }
+  const lg = store.get('logo', null); if (typeof lg === 'string' && lg.startsWith('data:image/')) loadLogo(lg, false);
   const mn = store.get('min', 10); if ([5, 10, 15, 20, 30].includes(mn)) $('#iMin').value = mn;
 }
 if (RM) { const b = $('#btnStrobe'); b.disabled = true; b.title = 'Bei reduzierter Bewegung deaktiviert'; }
