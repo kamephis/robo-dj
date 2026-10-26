@@ -58,14 +58,10 @@ body.playing .logo i{background:var(--mint);box-shadow:0 0 12px var(--mint);anim
 .dock{position:fixed;inset:auto 0 0 0;z-index:3;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s}
-.deck{max-width:1320px;margin:0 auto;background:var(--deck);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+.deck{max-width:1180px;margin:0 auto;background:var(--deck);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
   border:1px solid var(--line);border-radius:22px;padding:14px 16px 12px;display:flex;flex-wrap:wrap;gap:14px 26px;align-items:flex-start;
   max-height:46vh;overflow-y:auto;box-shadow:0 18px 50px rgba(0,0,0,.45)}
-.grp{display:flex;flex-direction:column;gap:8px;min-width:0}
-.grp h2{margin:0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
 .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.hint{flex-basis:100%;margin:0;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:9px}
-.hint kbd{font-family:inherit;color:var(--ink);background:rgba(255,255,255,.07);border-radius:5px;padding:1px 5px}
 
 button,select,input{font:inherit;color:inherit}
 .chip{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--ink);font-size:14px;font-weight:500;
@@ -85,7 +81,6 @@ button,select,input{font:inherit;color:inherit}
 body.playing .play{background:var(--candy);color:#2a0919;box-shadow:0 0 0 5px rgba(255,95,162,.18),0 0 26px rgba(255,95,162,.5)}
 body.playing .play .i-play{display:none}
 body.playing .play .i-pause{display:block}
-.music{display:flex;gap:14px;align-items:center}
 .sliders{display:grid;grid-template-columns:max-content minmax(110px,170px) 3.4em;justify-content:start;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--muted)}
 .sliders output{font-family:var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums;text-align:right;font-size:12px}
 input[type=range]{accent-color:var(--candy);width:100%;margin:0}
@@ -101,6 +96,42 @@ input[type=range]{accent-color:var(--candy);width:100%;margin:0}
 input.field{width:170px}
 select.field{padding-right:6px}
 
+.deck{flex-direction:column;flex-wrap:nowrap;gap:0;padding:10px 12px}
+.transport{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.now{flex:1 1 220px;min-width:0}
+.now-title{font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now .np{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctl,.nav{display:flex;align-items:center;gap:10px 14px;min-width:0;max-width:100%}
+.nav{gap:8px}
+.nav .tabs{flex:0 1 auto;min-width:0}
+.fold{flex:none}
+.vol{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.vol input{width:clamp(70px,22vw,110px)}
+.vol output{font-family:var(--f-mono);font-size:12px;color:var(--ink);min-width:3.4em;text-align:right;font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);max-width:100%;overflow-x:auto}
+.tabs button{appearance:none;border:0;background:transparent;color:var(--muted);font-size:14px;font-weight:500;padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{background:rgba(255,255,255,.13);color:var(--ink)}
+.fold{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--ink);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.fold svg{width:18px;height:18px;transition:transform .2s}
+.fold[aria-expanded="false"] svg{transform:rotate(180deg)}
+.panes{margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
+.deck.folded .panes{display:none}
+.pane{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:flex-start}
+.fg{display:flex;flex-direction:column;gap:7px;min-width:0}
+.fg.grow{flex:1 1 320px}
+.lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+.keys{flex-basis:100%;margin:0;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.keys kbd{font-family:inherit;color:var(--ink);background:rgba(255,255,255,.07);border-radius:5px;padding:1px 5px}
+.seg{display:inline-flex;padding:3px;gap:2px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.seg button{appearance:none;border:0;background:transparent;color:var(--muted);font-size:14px;font-weight:500;padding:6px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--mint);color:#06231b}
+.sep{width:1px;align-self:stretch;background:var(--line);margin:2px 4px}
+.trk small{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400;margin-left:6px}
+.trk[aria-current="true"]{border-color:var(--mint);box-shadow:inset 0 0 0 1px var(--mint)}
+.trk[aria-current="true"]::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint);margin-right:7px;vertical-align:1px;box-shadow:0 0 8px var(--mint)}
+.trk.next{border-style:dashed;border-color:var(--sun)}
+
 /* stage mode: hide controls */
 body.stage .dock{transform:translateY(calc(100% + 20px));opacity:0;pointer-events:none}
 body.stage .brand,body.stage .view{opacity:0;pointer-events:none}
@@ -115,6 +146,8 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
   .brand{grid-area:brand}.view{grid-area:view}.banner{grid-area:banner}
   .deck{gap:12px 18px}
   input.field{width:140px}
+  .tabs button{padding:6px 9px;font-size:13.5px}
+  .nav{flex:1 1 100%}
 }
 @media (prefers-reduced-motion:reduce){
   body.playing .logo i{animation:none}
@@ -130,7 +163,6 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
 <header class="top">
   <div class="brand">
     <div class="logo"><i></i>Robo DJ</div>
-    <div class="np" id="np"><b id="npStyle">House</b> · <span id="npBpm">124</span> BPM · Takt <span id="npBar">–</span><span id="npPart"></span></div>
   </div>
   <div class="banner" id="banner" aria-live="polite">
     <h1 id="bannerTitle">Kurze Pause</h1>
@@ -143,15 +175,53 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
 </header>
 
 <div class="dock">
-  <div class="deck" role="group" aria-label="Steuerung">
-    <section class="grp">
-      <h2>Musik</h2>
-      <div class="music">
-        <button class="play" id="btnPlay" aria-label="Musik starten" title="Play / Pause (Leertaste)">
-          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
-          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.5" fill="currentColor"/><rect x="14" y="4" width="5" height="16" rx="1.5" fill="currentColor"/></svg>
-        </button>
-        <div class="grp">
+  <div class="deck" id="deck" role="group" aria-label="Steuerung">
+    <div class="transport">
+      <button class="play" id="btnPlay" aria-label="Musik starten" title="Play / Pause (Leertaste)">
+        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.5" fill="currentColor"/><rect x="14" y="4" width="5" height="16" rx="1.5" fill="currentColor"/></svg>
+      </button>
+      <div class="now" aria-live="polite">
+        <div class="now-title" id="npTitle">Bereit: Play drücken</div>
+        <div class="np" id="np"><b id="npStyle">House</b> · <span id="npBpm">124</span> BPM · Takt <span id="npBar">–</span><span id="npPart"></span></div>
+      </div>
+      <div class="ctl">
+      <button class="chip" id="btnNext" title="Zum nächsten Track springen (.)">Nächster Track</button>
+      <div class="vol">
+        <label for="sVol">Lautstärke</label>
+        <input type="range" id="sVol" min="0" max="100" value="75">
+        <output id="oVol">75 %</output>
+      </div>
+      </div>
+      <div class="nav">
+      <div class="tabs" role="tablist" aria-label="Bereiche">
+        <button role="tab" id="tab-music" data-tab="music" aria-controls="pane-music" aria-selected="true">Musik</button>
+        <button role="tab" id="tab-dance" data-tab="dance" aria-controls="pane-dance" aria-selected="false" tabindex="-1">Tanz</button>
+        <button role="tab" id="tab-show" data-tab="show" aria-controls="pane-show" aria-selected="false" tabindex="-1">Show</button>
+        <button role="tab" id="tab-pause" data-tab="pause" aria-controls="pane-pause" aria-selected="false" tabindex="-1">Pause</button>
+        <button role="tab" id="tab-stage" data-tab="stage" aria-controls="pane-stage" aria-selected="false" tabindex="-1">Bühne</button>
+      </div>
+      <button class="fold" id="btnFold" aria-expanded="true" aria-controls="panes" title="Bedienfeld einklappen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      </div>
+    </div>
+
+    <div class="panes" id="panes">
+      <section class="pane" id="pane-music" role="tabpanel" aria-labelledby="tab-music">
+        <div class="fg">
+          <span class="lbl">Modus</span>
+          <div class="seg" role="group" aria-label="Modus">
+            <button data-mode="set" aria-pressed="true" title="Eigene Tracks als durchgehendes Set (J)">DJ-Set</button>
+            <button data-mode="free" aria-pressed="false" title="Endlos generierte Musik in einem Stil (J)">Freie Musik</button>
+          </div>
+        </div>
+        <div class="fg grow" id="setBox">
+          <span class="lbl">Setliste · Klick spielt den Track als Nächstes</span>
+          <div class="row" id="trackList"></div>
+        </div>
+        <div class="fg grow" id="freeBox" hidden>
+          <span class="lbl">Stil</span>
           <div class="row" role="group" aria-label="Stil">
             <button class="chip" data-style="house" aria-pressed="true">House</button>
             <button class="chip" data-style="retro" aria-pressed="false">Retro-Disco</button>
@@ -159,89 +229,103 @@ body.stage.wake .peek,body.stage .peek:focus-visible,body.stage .peek:hover{opac
             <button class="chip" data-style="funk" aria-pressed="false">Funk</button>
             <button class="chip" data-style="pop" aria-pressed="false">Pop</button>
             <button class="chip" data-style="salsa" aria-pressed="false">Salsa</button>
-            <button class="chip fx" id="btnSet" aria-pressed="true" title="Spielt eigene Tracks auf 4-Chord-Basis als durchgehendes Set (J)">DJ-Set</button>
-            <button class="chip" id="btnNext" title="Zum nächsten Track springen (Taste .)">Nächster Track</button>
+            <span class="sep" aria-hidden="true"></span>
             <button class="chip fx" id="btnMix" aria-pressed="false" title="Wechselt alle 32 Takte automatisch den Stil (M)">Auto-Mix</button>
           </div>
+        </div>
+        <div class="fg">
+          <span class="lbl">Klang</span>
           <div class="sliders">
             <label for="sTempo">Tempo</label><input type="range" id="sTempo" min="70" max="140" value="124"><output id="oTempo">124</output>
-            <label for="sVol">Lautstärke</label><input type="range" id="sVol" min="0" max="100" value="75"><output id="oVol">75 %</output>
-            <label for="sFilter" title="Links: Tiefpass · Mitte: aus · Rechts: Hochpass">DJ-Filter</label><input type="range" id="sFilter" min="-100" max="100" value="0"><output id="oFilter">aus</output>
+            <label for="sFilter" title="Links: Tiefpass · Mitte: aus · Rechts: Hochpass · Doppelklick: zurücksetzen">DJ-Filter</label><input type="range" id="sFilter" min="-100" max="100" value="0"><output id="oFilter">aus</output>
           </div>
         </div>
-      </div>
-    </section>
+        <p class="keys"><kbd>Leertaste</kbd> Play/Pause · <kbd>J</kbd> DJ-Set/Freie Musik · <kbd>.</kbd> Nächster Track · <kbd>M</kbd> Auto-Mix</p>
+      </section>
 
-    <section class="grp">
-      <h2>Tanz</h2>
-      <div class="row" style="max-width:330px">
-        <button class="chip" data-move="auto" aria-pressed="true" title="1">Auto</button>
-        <button class="chip" data-move="dj" aria-pressed="false" title="2">Auflegen</button>
-        <button class="chip" data-move="hands" aria-pressed="false" title="3">Hände hoch</button>
-        <button class="chip" data-move="robot" aria-pressed="false" title="4">Robot Dance</button>
-        <button class="chip" data-move="headbang" aria-pressed="false" title="5">Headbang</button>
-        <button class="chip" data-move="spin" aria-pressed="false" title="6">Pirouette</button>
-        <button class="chip" data-move="wave" aria-pressed="false" title="7">Winken</button>
-        <button class="chip" data-move="fever" aria-pressed="false" title="8">Disco-Finger</button>
-      </div>
-    </section>
+      <section class="pane" id="pane-dance" role="tabpanel" aria-labelledby="tab-dance" hidden>
+        <div class="fg grow">
+          <span class="lbl">Tanzstil</span>
+          <div class="row">
+            <button class="chip" data-move="auto" aria-pressed="true" title="1">Auto</button>
+            <button class="chip" data-move="dj" aria-pressed="false" title="2">Auflegen</button>
+            <button class="chip" data-move="hands" aria-pressed="false" title="3">Hände hoch</button>
+            <button class="chip" data-move="robot" aria-pressed="false" title="4">Robot Dance</button>
+            <button class="chip" data-move="headbang" aria-pressed="false" title="5">Headbang</button>
+            <button class="chip" data-move="spin" aria-pressed="false" title="6">Pirouette</button>
+            <button class="chip" data-move="wave" aria-pressed="false" title="7">Winken</button>
+            <button class="chip" data-move="fever" aria-pressed="false" title="8">Disco-Finger</button>
+          </div>
+        </div>
+        <p class="keys"><kbd>1</kbd>–<kbd>8</kbd> Tanzstil · Roboter anklicken = Boop</p>
+      </section>
 
-    <section class="grp">
-      <h2>Licht &amp; Effekte</h2>
-      <div class="row" style="max-width:330px">
-        <button class="chip fx" data-fx="lights" aria-pressed="true" title="S">Lichtshow</button>
-        <button class="chip fx" data-fx="wall" aria-pressed="true" title="W">LED-Wand</button>
-        <button class="chip fx" data-fx="lasers" aria-pressed="false" title="L">Laser</button>
-        <button class="chip fx" data-fx="disco" aria-pressed="false" title="D">Discokugel</button>
-        <button class="chip fx" data-fx="fog" aria-pressed="false" title="N">Nebel</button>
-        <button class="chip fx" data-fx="strobe" aria-pressed="false" id="btnStrobe" title="B · blitzt im Takt, max. ca. 2× pro Sekunde">Stroboskop</button>
-      </div>
-    </section>
+      <section class="pane" id="pane-show" role="tabpanel" aria-labelledby="tab-show" hidden>
+        <div class="fg">
+          <span class="lbl">Licht &amp; Effekte</span>
+          <div class="row">
+            <button class="chip fx" data-fx="lights" aria-pressed="true" title="S">Lichtshow</button>
+            <button class="chip fx" data-fx="wall" aria-pressed="true" title="W">LED-Wand</button>
+            <button class="chip fx" data-fx="lasers" aria-pressed="false" title="L">Laser</button>
+            <button class="chip fx" data-fx="disco" aria-pressed="false" title="D">Discokugel</button>
+            <button class="chip fx" data-fx="fog" aria-pressed="false" title="N">Nebel</button>
+            <button class="chip fx" data-fx="strobe" aria-pressed="false" id="btnStrobe" title="B · blitzt im Takt, max. ca. 2× pro Sekunde">Stroboskop</button>
+          </div>
+        </div>
+        <div class="fg">
+          <span class="lbl">FX-Pad</span>
+          <div class="row">
+            <button class="pad" data-shot="confetti" style="--pc:var(--sun)">Konfetti<small>K</small></button>
+            <button class="pad" data-shot="horn" style="--pc:var(--candy)">Air-Horn<small>A</small></button>
+            <button class="pad" data-shot="scratch" style="--pc:var(--mint)">Scratch<small>X</small></button>
+            <button class="pad" data-shot="drop" style="--pc:#9d8bff">Drop<small>R</small></button>
+          </div>
+        </div>
+        <p class="keys"><kbd>S</kbd> <kbd>W</kbd> <kbd>L</kbd> <kbd>D</kbd> <kbd>N</kbd> <kbd>B</kbd> Effekte · <kbd>K</kbd> <kbd>A</kbd> <kbd>X</kbd> <kbd>R</kbd> FX-Pad</p>
+      </section>
 
-    <section class="grp">
-      <h2>FX-Pad</h2>
-      <div class="row">
-        <button class="pad" data-shot="confetti" style="--pc:var(--sun)">Konfetti<small>K</small></button>
-        <button class="pad" data-shot="horn" style="--pc:var(--candy)">Air-Horn<small>A</small></button>
-        <button class="pad" data-shot="scratch" style="--pc:var(--mint)">Scratch<small>X</small></button>
-        <button class="pad" data-shot="drop" style="--pc:#9d8bff">Drop<small>R</small></button>
-      </div>
-    </section>
+      <section class="pane" id="pane-pause" role="tabpanel" aria-labelledby="tab-pause" hidden>
+        <div class="fg">
+          <label class="lbl" for="iText">Banner-Text</label>
+          <input class="field" id="iText" maxlength="40" value="Kurze Pause" placeholder="Banner-Text">
+        </div>
+        <div class="fg">
+          <label class="lbl" for="iMin">Dauer</label>
+          <div class="row">
+            <select class="field" id="iMin">
+              <option value="5">5 Min.</option>
+              <option value="10" selected>10 Min.</option>
+              <option value="15">15 Min.</option>
+              <option value="20">20 Min.</option>
+              <option value="30">30 Min.</option>
+            </select>
+            <button class="chip" id="btnTimer" aria-pressed="false">Timer starten</button>
+          </div>
+        </div>
+        <p class="keys">Am Ende des Timers winkt der Roboter und die Musik wird ausgeblendet.</p>
+      </section>
 
-    <section class="grp">
-      <h2>Pausen-Timer</h2>
-      <div class="row">
-        <label class="visually" for="iText" style="position:absolute;left:-9999px">Banner-Text</label>
-        <input class="field" id="iText" maxlength="40" value="Kurze Pause" placeholder="Banner-Text">
-        <label for="iMin" style="position:absolute;left:-9999px">Dauer</label>
-        <select class="field" id="iMin">
-          <option value="5">5 Min.</option>
-          <option value="10" selected>10 Min.</option>
-          <option value="15">15 Min.</option>
-          <option value="20">20 Min.</option>
-          <option value="30">30 Min.</option>
-        </select>
-        <button class="chip" id="btnTimer" aria-pressed="false">Timer starten</button>
-      </div>
-    </section>
-
-    <section class="grp">
-      <h2>Bühne</h2>
-      <div class="row" role="group" aria-label="Setting">
-        <button class="chip" data-scene="club" aria-pressed="true" title="G">Club</button>
-        <button class="chip" data-scene="beach" aria-pressed="false" title="G">Strand</button>
-        <button class="chip" data-scene="space" aria-pressed="false" title="G">Weltall</button>
-      </div>
-      <div class="row">
-        <label for="iDesk" style="position:absolute;left:-9999px">Schriftzug am Pult</label>
-        <input class="field" id="iDesk" maxlength="18" value="ROBO DJ" placeholder="Schriftzug am Pult" style="width:150px">
-        <button class="chip" id="btnLogo" title="PNG, JPG oder SVG – wird statt des Schriftzugs am Pult gezeigt">Logo laden</button>
-        <button class="chip" id="btnLogoX" hidden>Logo entfernen</button>
-        <input type="file" id="iLogo" accept="image/*" hidden>
-      </div>
-    </section>
-
-    <p class="hint"><kbd>Leertaste</kbd> Musik · <kbd>J</kbd> DJ-Set · <kbd>.</kbd> Nächster Track · <kbd>M</kbd> Auto-Mix · <kbd>1</kbd>–<kbd>8</kbd> Tanz · <kbd>K</kbd> <kbd>A</kbd> <kbd>X</kbd> <kbd>R</kbd> FX-Pad · <kbd>G</kbd> Bühne · <kbd>F</kbd> Vollbild · <kbd>H</kbd> Steuerung aus/an · Roboter anklicken = Boop</p>
+      <section class="pane" id="pane-stage" role="tabpanel" aria-labelledby="tab-stage" hidden>
+        <div class="fg">
+          <span class="lbl">Ort</span>
+          <div class="row" role="group" aria-label="Ort">
+            <button class="chip" data-scene="club" aria-pressed="true" title="G">Club</button>
+            <button class="chip" data-scene="beach" aria-pressed="false" title="G">Strand</button>
+            <button class="chip" data-scene="space" aria-pressed="false" title="G">Weltall</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="lbl" for="iDesk">Schriftzug am Pult</label>
+          <div class="row">
+            <input class="field" id="iDesk" maxlength="18" value="ROBO DJ" placeholder="Schriftzug am Pult">
+            <button class="chip" id="btnLogo" title="PNG, JPG oder SVG – wird statt des Schriftzugs am Pult gezeigt">Logo laden</button>
+            <button class="chip" id="btnLogoX" hidden>Logo entfernen</button>
+            <input type="file" id="iLogo" accept="image/*" hidden>
+          </div>
+        </div>
+        <p class="keys"><kbd>G</kbd> Ort wechseln · <kbd>F</kbd> Vollbild · <kbd>H</kbd> Steuerung aus/an</p>
+      </section>
+    </div>
   </div>
 </div>
 <button class="chip peek" id="btnPeek" title="Steuerung einblenden (H)">Steuerung</button>
@@ -556,7 +640,7 @@ for (const side of [-1, 1]) for (let i = 0; i < 6; i++) {
 }
 const laserEmit = [-1, 1].map(s => { const e = mesh(new THREE.SphereGeometry(0.09, 14, 10), new THREE.MeshBasicMaterial({ color: '#ffffff' })); e.position.set(s * 4.2, 3.75, -2.9); scene.add(e); return e; });
 // disco ball
-const disco = new THREE.Group(); disco.position.set(-1.75, 7, 1.0); scene.add(disco);
+const disco = new THREE.Group(); disco.position.set(-1.75, 11, 1.0); scene.add(disco);
 const ball = mesh(new THREE.IcosahedronGeometry(0.36, 3), std('#ffffff', { metalness: 1, roughness: 0.12, flatShading: true }));
 disco.add(ball);
 const chain = mesh(new THREE.CylinderGeometry(0.008, 0.008, 4, 6), M.joint); chain.position.y = 2.36; disco.add(chain);
@@ -1131,7 +1215,7 @@ function scheduleStep(step, t0) {
   let trk = null;
   if (A.set) {
     if (!A.order) A.order = shuffledOrder();
-    const ti = Math.floor(bar / 32); trk = TRACKS[A.order[ti % TRACKS.length]];
+    const ti = Math.floor(bar / 32); A.curTrack = A.order[ti % TRACKS.length]; trk = TRACKS[A.curTrack];
     if (A.trackNo !== ti) { A.trackNo = ti; A.style = trk.style; A.bpm = trk.bpm; ev('style', t0); }
   }
   const S = STYLES[A.style], P = planFor(phrase);
@@ -1144,7 +1228,7 @@ function scheduleStep(step, t0) {
   const fill = !breakdown && !build && s >= 12 && (sec % 8 === 7 || (sec % 4 === 3 && hash(P.seed + bar) < 0.5));
   if (s % 4 === 0) ev('beat', t0, { beat: step / 4 });
   const part_ = breakdown ? 'Breakdown' : build ? 'Build-up' : trk ? (lead ? (chorus ? 'Refrain' : 'Strophe') : (chorus ? 'Outro' : 'Intro')) : A.style === 'pop' ? (lead ? 'Refrain' : 'Strophe') : lead ? 'Melodie' : 'Groove';
-  if (s === 0) ev('bar', t0, { bar, sec, breakdown, build, label: (trk ? '♪ ' + trk.name + ' · ' : '') + part_ + ' · ' + (trk ? trk.chords.name : P.prog.name) });
+  if (s === 0) ev('bar', t0, { bar, sec, breakdown, build, label: part_ + ' · ' + (trk ? trk.chords.name : P.prog.name), trk: trk ? A.curTrack : -1 });
   if (s === 0 && sec === 0 && bar > 0) { if (S.edm && (!trk || chorus)) ev('drop', t0); crash(t0); }
   if (brk && sec === 12 && s === 0) riser(t, spb * 64);
   if (build) {
@@ -1169,7 +1253,8 @@ const freq = new Uint8Array(512);
 function play() {
   initAudio(); A.ctx.resume();
   if (A.playing) return;
-  A.playing = true; A.step = 0; A.seed = Math.floor(Math.random() * 1000); A.planKey = null; A.order = shuffledOrder(); A.trackNo = -1; A.nextTime = A.ctx.currentTime + 0.08; A.events.length = 0;
+  A.playing = true; A.step = 0; A.seed = Math.floor(Math.random() * 1000); A.planKey = null; A.order = shuffledOrder(); A.trackNo = -1;
+  if (A.first !== undefined) { const pos = A.order.indexOf(A.first); [A.order[0], A.order[pos]] = [A.order[pos], A.order[0]]; A.first = undefined; } A.nextTime = A.ctx.currentTime + 0.08; A.events.length = 0;
   A.fade.gain.cancelScheduledValues(A.ctx.currentTime); A.fade.gain.setValueAtTime(1, A.ctx.currentTime);
   applyFilter(); syncUI();
   if (navigator.wakeLock) navigator.wakeLock.request('screen').then(l => (A.lock = l)).catch(() => {});
@@ -1370,6 +1455,8 @@ function handleEvent(e, now) {
     snarePulse = 1;
   } else if (e.kind === 'bar') {
     barNo = e.bar; $('#npBar').textContent = e.bar + 1; $('#npPart').textContent = ' · ' + e.label;
+    $('#npTitle').textContent = e.trk >= 0 ? '♪ ' + TRACKS[e.trk].name : STYLES[A.style].label + (A.autoMix ? ' · Auto-Mix' : '');
+    $$('.trk').forEach(b => { const cur = +b.dataset.track === e.trk; if (cur) { b.setAttribute('aria-current', 'true'); b.classList.remove('next'); } else b.removeAttribute('aria-current'); });
     if (e.bar % 2 === 0) floorMode = (floorMode + 1) % 4;
     if (e.bar % 4 === 0) palShift = (palShift + 1) % PAL.length;
     if (state.move === 'auto' && e.bar % 4 === 0 && e.bar > 0) state.autoMove = AUTO_SEQ[(e.bar / 4) % AUTO_SEQ.length];
@@ -1504,7 +1591,7 @@ function frame(nowMs) {
   });
   laserEmit.forEach(e => (e.visible = state.fx.lasers));
   // disco ball
-  disco.position.y = damp(disco.position.y, state.fx.disco ? 3.45 : 7.2, 2.5, dt);
+  disco.position.y = damp(disco.position.y, state.fx.disco ? 3.45 : 11, 2.5, dt);
   disco.rotation.y += dt * 0.6; sparks.rotation.y = disco.rotation.y; sparks.position.y = disco.position.y;
   sparkMat.opacity = damp(sparkMat.opacity, state.fx.disco ? 0.95 : 0, 3, dt);
   sparks.visible = sparkMat.opacity > 0.01;
@@ -1592,8 +1679,10 @@ function syncUI() {
   $('#npStyle').textContent = STYLES[A.style].label; $('#npBpm').textContent = A.bpm;
   if (!A.playing) { $('#npBar').textContent = '–'; $('#npPart').textContent = ''; }
   $('#btnMix').setAttribute('aria-pressed', !!A.autoMix);
-  $('#btnSet').setAttribute('aria-pressed', !!A.set);
-  $('#btnNext').disabled = !A.set || !A.playing;
+  $$('[data-mode]').forEach(b => b.setAttribute('aria-pressed', (b.dataset.mode === 'set') === !!A.set));
+  $('#setBox').hidden = !A.set; $('#freeBox').hidden = !!A.set;
+  if (!A.playing) { $('#npTitle').textContent = A.set ? 'DJ-Set bereit: Play drücken' : STYLES[A.style].label + ' bereit: Play drücken'; $$('.trk').forEach(b => b.removeAttribute('aria-current')); }
+  $('#btnNext').hidden = !A.set; $('#btnNext').disabled = !A.playing;
   document.body.style.setProperty('--bpm', A.bpm);
   $$('[data-scene]').forEach(b => b.setAttribute('aria-pressed', b.dataset.scene === curScene));
   const wb = document.querySelector('[data-fx="wall"]'); wb.disabled = curScene !== 'club'; wb.title = curScene === 'club' ? 'W' : 'Nur im Club';
@@ -1643,7 +1732,36 @@ $('#btnLogo').addEventListener('click', () => $('#iLogo').click());
 $('#iLogo').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => loadLogo(rd.result, true); rd.readAsDataURL(f); e.target.value = ''; });
 $('#btnLogoX').addEventListener('click', () => { deskCfg.img = null; drawLogo(); store.set('logo', null); syncUI(); });
 function toggleSet() { A.set = !A.set; store.set('set', A.set); A.trackNo = -1; syncUI(); }
-$('#btnSet').addEventListener('click', toggleSet);
+function setMode(on) { if (!!A.set !== on) toggleSet(); }
+$$('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode === 'set')));
+TRACKS.forEach((tr, i) => {
+  const b = document.createElement('button'); b.className = 'chip trk'; b.dataset.track = i;
+  b.innerHTML = `${tr.name}<small>${STYLES[tr.style].label}</small>`;
+  b.addEventListener('click', () => jumpTo(i)); $('#trackList').appendChild(b);
+});
+function jumpTo(i) {
+  if (!A.set) setMode(true);
+  if (!A.playing) { A.first = i; play(); return; }
+  const L = TRACKS.length, tgt = (Math.floor(A.step / 512) + 1) % L, pos = A.order.indexOf(i);
+  [A.order[pos], A.order[tgt]] = [A.order[tgt], A.order[pos]];
+  A.skip = true; $$('.trk').forEach(b => b.classList.toggle('next', +b.dataset.track === i));
+}
+function selectTab(name, focus) {
+  $$('[role=tab]').forEach(t => { const on = t.dataset.tab === name; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+  $$('.pane').forEach(p => (p.hidden = p.id !== 'pane-' + name));
+  if ($('#deck').classList.contains('folded')) toggleFold();
+  store.set('tab', name); measure();
+}
+$$('[role=tab]').forEach(t => {
+  t.addEventListener('click', () => selectTab(t.dataset.tab));
+  t.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const tabs = $$('[role=tab]'), i = tabs.indexOf(t), n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    e.preventDefault(); selectTab(n.dataset.tab, true);
+  });
+});
+function toggleFold() { const d = $('#deck'), f = d.classList.toggle('folded'); $('#btnFold').setAttribute('aria-expanded', !f); $('#btnFold').title = f ? 'Bedienfeld ausklappen' : 'Bedienfeld einklappen'; store.set('fold', f); measure(); }
+$('#btnFold').addEventListener('click', toggleFold);
 $('#btnNext').addEventListener('click', () => { A.skip = true; });
 $('#btnMix').addEventListener('click', () => { A.autoMix = !A.autoMix; store.set('mix', A.autoMix); syncUI(); });
 $('#btnTimer').addEventListener('click', () => (state.timer.running ? cancelTimer() : startTimer()));
@@ -1688,6 +1806,8 @@ addEventListener('keydown', e => {
   const lg = store.get('logo', null); if (typeof lg === 'string' && lg.startsWith('data:image/')) loadLogo(lg, false);
   A.autoMix = store.get('mix', false) === true;
   A.set = store.get('set', true) !== false;
+  const tb = store.get('tab', 'music'); if (['music', 'dance', 'show', 'pause', 'stage'].includes(tb) && tb !== 'music') selectTab(tb);
+  if (store.get('fold', innerWidth < 720) === true) toggleFold();
   const mn = store.get('min', 10); if ([5, 10, 15, 20, 30].includes(mn)) $('#iMin').value = mn;
 }
 if (RM) { const b = $('#btnStrobe'); b.disabled = true; b.title = 'Bei reduzierter Bewegung deaktiviert'; }
